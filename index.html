@@ -1,197 +1,190 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Menu</title>
-    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-    <style>
-        * { box-sizing: border-box; }
-        body {
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            background-color: #f8f9fa;
-            margin: 0;
-            padding: 20px;
-            color: #333;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Order Menu</title>
 
-        h3 {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            color: #111;
-            border-bottom: 2px solid #06c755;
-            padding-bottom: 8px;
-            display: inline-block;
-        }
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
-        /* กล่องสินค้าแบบใหม่ */
-        .item {
-            background: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            padding: 16px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
+<style>
+* { box-sizing: border-box; }
 
-        .item p {
-            margin: 0;
-            font-weight: 600;
-            font-size: 16px;
-        }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    background: #f4f6f8;
+    margin: 0;
+    color: #333;
+}
 
-        /* ส่วนควบคุมจำนวน */
-        .controls {
-            display: flex;
-            align-items: center;
-            background: #f1f1f1;
-            border-radius: 25px;
-            padding: 4px;
-        }
+/* HEADER */
+h3 {
+    font-size: 18px;
+    margin: 16px;
+    font-weight: bold;
+}
 
-        /* ปุ่ม + และ - */
-        .circle {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: none;
-            font-size: 20px;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: white;
-            color: #06c755;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transition: all 0.2s;
-        }
+/* CONTENT */
+.container {
+    padding: 0 16px 120px;
+}
 
-        .circle:active {
-            transform: scale(0.9);
-            background: #06c755;
-            color: white;
-        }
+/* ITEM CARD */
+.item {
+    background: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px;
+    border-radius: 14px;
+    margin-bottom: 12px;
+}
 
-        .count {
-            min-width: 40px;
-            text-align: center;
-            font-size: 16px;
-            font-weight: bold;
-        }
+/* TEXT */
+.item p {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+}
 
-        /* ปุ่มส่ง (Fixed ด้านล่าง) */
-        .footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 20px;
-            background: white;
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
-        }
+/* CONTROL */
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
-        .finish-btn {
-            width: 100%;
-            background: #06c755;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 15px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
+/* BUTTON */
+.circle {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: none;
+    font-size: 20px;
+    font-weight: bold;
+    background: #06c755;
+    color: white;
+    cursor: pointer;
+}
 
-        .finish-btn:active {
-            background: #05a647;
-        }
+.circle.minus {
+    background: #ddd;
+    color: #333;
+}
 
-        /* เผื่อพื้นที่ด้านล่างไม่ให้โดนปุ่มทับ */
-        .container {
-            padding-bottom: 100px;
-        }
-    </style>
+.circle:active {
+    transform: scale(0.9);
+}
+
+/* COUNT */
+.count {
+    min-width: 30px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* FOOTER */
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+    background: #fff;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
+}
+
+/* BUTTON SUBMIT */
+.finish-btn {
+    width: 100%;
+    background: #06c755;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: bold;
+}
+</style>
 </head>
 
 <body>
 
+<h3>🛒 เลือกรายการสินค้า</h3>
+
 <div class="container">
-    <h3>🛒 เลือกรายการสินค้า</h3>
 
-    <div class="item">
-        <p>ชิฟฟ่อนมะพร้าว</p>
-        <div class="controls">
-            <button class="circle" onclick="updateItem('ชิฟฟ่อนมะพร้าว', -1)">-</button>
-            <span id="count-ชิฟฟ่อนมะพร้าว" class="count">0</span>
-            <button class="circle" onclick="updateItem('ชิฟฟ่อนมะพร้าว', 1)">+</button>
-        </div>
-    </div>
+    <div class="item">
+        <p>ชิฟฟ่อนมะพร้าว</p>
+        <div class="controls">
+            <button class="circle minus" onclick="updateItem('ชิฟฟ่อนมะพร้าว', -1)">-</button>
+            <span id="count-ชิฟฟ่อนมะพร้าว" class="count">0</span>
+            <button class="circle" onclick="updateItem('ชิฟฟ่อนมะพร้าว', 1)">+</button>
+        </div>
+    </div>
 
-    <div class="item">
-        <p>ชิฟฟ่อนมะพร้าวมีไส้</p>
-        <div class="controls">
-            <button class="circle" onclick="updateItem('ชิฟฟ่อนมะพร้าวมีไส้', -1)">-</button>
-            <span id="count-ชิฟฟ่อนมะพร้าวมีไส้" class="count">0</span>
-            <button class="circle" onclick="updateItem('ชิฟฟ่อนมะพร้าวมีไส้', 1)">+</button>
-        </div>
-    </div>
+    <div class="item">
+        <p>ชิฟฟ่อนมะพร้าวมีไส้</p>
+        <div class="controls">
+            <button class="circle minus" onclick="updateItem('ชิฟฟ่อนมะพร้าวมีไส้', -1)">-</button>
+            <span id="count-ชิฟฟ่อนมะพร้าวมีไส้" class="count">0</span>
+            <button class="circle" onclick="updateItem('ชิฟฟ่อนมะพร้าวมีไส้', 1)">+</button>
+        </div>
+    </div>
+
 </div>
 
 <div class="footer">
-    <button class="finish-btn" onclick="finishOrder()">
-        ส่งรายการสั่งซื้อ
-    </button>
+    <button class="finish-btn" onclick="finishOrder()">
+        ส่งรายการสั่งซื้อ
+    </button>
 </div>
 
 <script>
-    let cart = {};
+let cart = {};
 
-    async function init(){
-        await liff.init({
-            liffId: "2009962426-MPtoZcTX" // อย่าลืมใส่ LIFF ID ของคุณ
-        });
-    }
+async function init(){
+    await liff.init({
+        liffId: "2009962426-MPtoZcTX"
+    });
+}
+init();
 
-    init();
+function updateItem(item, change){
+    if(!cart[item]) cart[item] = 0;
 
-    function updateItem(item, change){
-        if(!cart[item]) cart[item] = 0;
-        
-        cart[item] += change;
-        if(cart[item] < 0) cart[item] = 0;
+    cart[item] += change;
+    if(cart[item] < 0) cart[item] = 0;
 
-        document.getElementById("count-"+item).innerText = cart[item];
-    }
+    document.getElementById("count-"+item).innerText = cart[item];
+}
 
-    function finishOrder(){
-        let msg = "📝 รายการสั่งซื้อ\n";
-        let hasItem = false;
+function finishOrder(){
+    let msg = "📝 รายการสั่งซื้อ\n";
+    let hasItem = false;
 
-        for(let item in cart){
-            if(cart[item] > 0){
-                msg += "• " + item + " (x" + cart[item] + ")\n";
-                hasItem = true;
-            }
-        }
+    for(let item in cart){
+        if(cart[item] > 0){
+            msg += "• " + item + " (x" + cart[item] + ")\n";
+            hasItem = true;
+        }
+    }
 
-        if(!hasItem){
-            alert("กรุณาเลือกสินค้าอย่างน้อย 1 อย่างครับ");
-            return;
-        }
+    if(!hasItem){
+        alert("กรุณาเลือกสินค้าอย่างน้อย 1 อย่างครับ");
+        return;
+    }
 
-        liff.sendMessages([{
-            type: "text",
-            text: msg
-        }]).then(() => {
-            liff.closeWindow();
-        }).catch((err) => {
-            console.error(err);
-        });
-    }
+    liff.sendMessages([{
+        type: "text",
+        text: msg
+    }]).then(() => {
+        liff.closeWindow();
+    }).catch((err) => {
+        console.error(err);
+    });
+}
 </script>
 
 </body>
