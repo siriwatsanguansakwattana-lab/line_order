@@ -22,12 +22,10 @@ h3 {
     margin: 16px;
 }
 
-/* CONTENT */
 .container {
     padding: 0 16px 140px;
 }
 
-/* ITEM */
 .item {
     background: #fff;
     display: flex;
@@ -38,21 +36,18 @@ h3 {
     margin-bottom: 12px;
 }
 
-/* TEXT */
 .item p {
     margin: 0;
     font-size: 15px;
     font-weight: 600;
 }
 
-/* CONTROL */
 .controls {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-/* BUTTON */
 .circle {
     width: 38px;
     height: 38px;
@@ -73,7 +68,6 @@ h3 {
     transform: scale(0.9);
 }
 
-/* COUNT */
 .count {
     min-width: 30px;
     text-align: center;
@@ -81,14 +75,12 @@ h3 {
     font-weight: bold;
 }
 
-/* TOTAL BOX */
 .total-box {
     padding: 10px 16px;
     font-size: 16px;
     font-weight: bold;
 }
 
-/* FOOTER */
 .footer {
     position: fixed;
     bottom: 0;
@@ -109,6 +101,14 @@ h3 {
     font-size: 16px;
     font-weight: bold;
 }
+
+/* textarea */
+textarea {
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 10px;
+}
 </style>
 </head>
 
@@ -118,6 +118,7 @@ h3 {
 
 <div class="container">
 
+    <!-- สินค้า -->
     <div class="item">
         <p>ชิฟฟ่อนมะพร้าว</p>
         <div class="controls">
@@ -136,6 +137,31 @@ h3 {
         </div>
     </div>
 
+    <!-- 🚚 วิธีจัดส่ง -->
+    <div class="item" style="flex-direction: column; align-items: flex-start;">
+        <p>🚚 วิธีจัดส่ง</p>
+
+        <label>
+            <input type="radio" name="delivery" value="lineman" onchange="selectDelivery()"> Line Man
+        </label>
+
+        <label>
+            <input type="radio" name="delivery" value="cold" onchange="selectDelivery()"> จัดส่งแบบเย็น
+        </label>
+
+        <select id="coldOptions" style="margin-top:10px; display:none;" onchange="updateShipping()">
+            <option value="0">-- เลือกพื้นที่ --</option>
+            <option value="90">กรุงเทพและปริมณฑล (90 บาท)</option>
+            <option value="140">ภาคอื่นๆ (140 บาท)</option>
+        </select>
+    </div>
+
+    <!-- 📍 ที่อยู่ -->
+    <div class="item" style="flex-direction: column; align-items: flex-start;">
+        <p>📍 ที่อยู่จัดส่ง</p>
+        <textarea id="address" placeholder="กรอกที่อยู่..."></textarea>
+    </div>
+
 </div>
 
 <div class="total-box" id="totalBox">
@@ -151,13 +177,15 @@ h3 {
 <script>
 let cart = {};
 
-// 🔥 ราคาสินค้า
 const prices = {
     "ชิฟฟ่อนมะพร้าว": 10,
     "ชิฟฟ่อนมะพร้าวมีไส้": 15
 };
 
-// init LIFF
+let shippingCost = 0;
+let deliveryType = "";
+
+// LIFF
 async function init(){
     await liff.init({
         liffId: "2009962426-MPtoZcTX"
@@ -173,11 +201,30 @@ function updateItem(item, change){
     if(cart[item] < 0) cart[item] = 0;
 
     document.getElementById("count-"+item).innerText = cart[item];
-
     calculateTotal();
 }
 
-// คำนวณยอดรวม
+// เลือกขนส่ง
+function selectDelivery(){
+    const selected = document.querySelector('input[name="delivery"]:checked').value;
+    deliveryType = selected;
+
+    if(selected === "cold"){
+        document.getElementById("coldOptions").style.display = "block";
+    }else{
+        document.getElementById("coldOptions").style.display = "none";
+        shippingCost = 0;
+        calculateTotal();
+    }
+}
+
+// เลือกค่าส่ง
+function updateShipping(){
+    shippingCost = parseInt(document.getElementById("coldOptions").value) || 0;
+    calculateTotal();
+}
+
+// คำนวณ
 function calculateTotal(){
     let total = 0;
 
@@ -185,13 +232,15 @@ function calculateTotal(){
         total += cart[item] * prices[item];
     }
 
-    document.getElementById("totalBox").innerText = "รวม: " + total + " บาท";
+    total += shippingCost;
+
+    document.getElementById("totalBox").innerText =
+        "รวม: " + total + " บาท";
 }
 
-// ออกบิล + ส่งเข้า LINE
+// ส่งบิล
 function finishOrder(){
-    let msg = "🧾 ใบสั่งซื้อ\n";
-    msg += "------------------\n";
+    let msg = "🧾 ใบสั่งซื้อ\n------------------\n";
 
     let total = 0;
     let hasItem = false;
@@ -201,19 +250,45 @@ function finishOrder(){
             let price = prices[item];
             let sum = cart[item] * price;
 
-            msg += item + "\n";
-            msg += cart[item] + " x " + price + " = " + sum + " บาท\n\n";
-
+            msg += item + "\n" + cart[item] + " x " + price + " = " + sum + " บาท\n\n";
             total += sum;
             hasItem = true;
         }
     }
 
     if(!hasItem){
-        alert("กรุณาเลือกสินค้าอย่างน้อย 1 อย่าง");
+        alert("กรุณาเลือกสินค้า");
         return;
     }
 
+    if(!deliveryType){
+        alert("กรุณาเลือกวิธีจัดส่ง");
+        return;
+    }
+
+    let address = document.getElementById("address").value;
+    if(!address){
+        alert("กรุณากรอกที่อยู่");
+        return;
+    }
+
+    let deliveryText = "";
+    if(deliveryType === "lineman"){
+        deliveryText = "Line Man";
+    }else{
+        if(shippingCost === 0){
+            alert("กรุณาเลือกพื้นที่จัดส่ง");
+            return;
+        }
+        deliveryText = "จัดส่งแบบเย็น (" + shippingCost + " บาท)";
+    }
+
+    total += shippingCost;
+
+    msg += "------------------\n";
+    msg += "🚚 วิธีจัดส่ง: " + deliveryText + "\n";
+    msg += "📍 ที่อยู่: " + address + "\n";
+    msg += "🚛 ค่าส่ง: " + shippingCost + " บาท\n";
     msg += "------------------\n";
     msg += "💰 รวมทั้งหมด: " + total + " บาท";
 
@@ -222,9 +297,7 @@ function finishOrder(){
         text: msg
     }]).then(() => {
         liff.closeWindow();
-    }).catch((err) => {
-        console.error(err);
-    });
+    }).catch(console.error);
 }
 </script>
 
