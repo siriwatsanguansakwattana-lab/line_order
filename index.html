@@ -1,160 +1,197 @@
 <!DOCTYPE html>
-<html>
+<html lang="th">
 <head>
-<meta charset="UTF-8">
-<title>Order Menu</title>
-<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Menu</title>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
 
-<style>
-body{
-  font-family: sans-serif;
-  padding: 15px;
-}
+        h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: #111;
+            border-bottom: 2px solid #06c755;
+            padding-bottom: 8px;
+            display: inline-block;
+        }
 
-/* กล่องสินค้า */
-.item{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
-}
+        /* กล่องสินค้าแบบใหม่ */
+        .item {
+            background: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
 
-/* ฝั่งปุ่ม */
-.controls{
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+        .item p {
+            margin: 0;
+            font-weight: 600;
+            font-size: 16px;
+        }
 
-/* ปุ่มกลม (+ -) */
-.circle{
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: none;
-  font-size: 18px;
-  cursor: pointer;
+        /* ส่วนควบคุมจำนวน */
+        .controls {
+            display: flex;
+            align-items: center;
+            background: #f1f1f1;
+            border-radius: 25px;
+            padding: 4px;
+        }
 
-  /* ทำให้ + อยู่ตรงกลางเป๊ะ */
-  display: flex;
-  justify-content: center;
-  align-items: center;
+        /* ปุ่ม + และ - */
+        .circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: white;
+            color: #06c755;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+        }
 
-  padding: 0;
-  line-height: 1;
+        .circle:active {
+            transform: scale(0.9);
+            background: #06c755;
+            color: white;
+        }
 
-  background: #eee;
-}
+        .count {
+            min-width: 40px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+        }
 
-.circle:active{
-  background: #ccc;
-}
+        /* ปุ่มส่ง (Fixed ด้านล่าง) */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
+        }
 
-/* จำนวน */
-.count{
-  min-width: 24px;
-  text-align: center;
-  font-size: 16px;
-}
+        .finish-btn {
+            width: 100%;
+            background: #06c755;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
 
-/* ปุ่มส่ง */
-.finish-btn{
-  margin-top: 20px;
-  width: 100%;
-  background: #06c755;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 12px;
-  font-size: 16px;
-}
-</style>
+        .finish-btn:active {
+            background: #05a647;
+        }
 
+        /* เผื่อพื้นที่ด้านล่างไม่ให้โดนปุ่มทับ */
+        .container {
+            padding-bottom: 100px;
+        }
+    </style>
 </head>
 
 <body>
 
-<h3>เลือกสินค้า</h3>
+<div class="container">
+    <h3>🛒 เลือกรายการสินค้า</h3>
 
-<div class="item">
-  <p>ชิฟฟ่อนมะพร้าว</p>
-  <div class="controls">
-    <button class="circle" onclick="updateItem('ชิฟฟ่อนมะพร้าว', -1)">-</button>
-    <span id="count-ชิฟฟ่อนมะพร้าว" class="count">0</span>
-    <button class="circle" onclick="updateItem('ชิฟฟ่อนมะพร้าว', 1)">+</button>
-  </div>
+    <div class="item">
+        <p>ชิฟฟ่อนมะพร้าว</p>
+        <div class="controls">
+            <button class="circle" onclick="updateItem('ชิฟฟ่อนมะพร้าว', -1)">-</button>
+            <span id="count-ชิฟฟ่อนมะพร้าว" class="count">0</span>
+            <button class="circle" onclick="updateItem('ชิฟฟ่อนมะพร้าว', 1)">+</button>
+        </div>
+    </div>
+
+    <div class="item">
+        <p>ชิฟฟ่อนมะพร้าวมีไส้</p>
+        <div class="controls">
+            <button class="circle" onclick="updateItem('ชิฟฟ่อนมะพร้าวมีไส้', -1)">-</button>
+            <span id="count-ชิฟฟ่อนมะพร้าวมีไส้" class="count">0</span>
+            <button class="circle" onclick="updateItem('ชิฟฟ่อนมะพร้าวมีไส้', 1)">+</button>
+        </div>
+    </div>
 </div>
 
-<div class="item">
-  <p>ชิฟฟ่อนมะพร้าวมีไส้</p>
-  <div class="controls">
-    <button class="circle" onclick="updateItem('ชิฟฟ่อนมะพร้าวมีไส้', -1)">-</button>
-    <span id="count-ชิฟฟ่อนมะพร้าวมีไส้" class="count">0</span>
-    <button class="circle" onclick="updateItem('ชิฟฟ่อนมะพร้าวมีไส้', 1)">+</button>
-  </div>
+<div class="footer">
+    <button class="finish-btn" onclick="finishOrder()">
+        ส่งรายการสั่งซื้อ
+    </button>
 </div>
-
-<button class="finish-btn" onclick="finishOrder()">
-เสร็จสิ้น
-</button>
 
 <script>
+    let cart = {};
 
-let cart = {};
-
-async function init(){
-  await liff.init({
-    liffId: "2009962426-MPtoZcTX"
-  });
-}
-
-init();
-
-function updateItem(item, change){
-
-  if(!cart[item]){
-    cart[item] = 0;
-  }
-
-  cart[item] += change;
-
-  if(cart[item] < 0){
-    cart[item] = 0;
-  }
-
-  document.getElementById("count-"+item).innerText = cart[item];
-}
-
-function finishOrder(){
-
-  let msg = "รายการสั่งซื้อ\n";
-  let hasItem = false;
-
-  for(let item in cart){
-    if(cart[item] > 0){
-      msg += "- " + item + " x" + cart[item] + "\n";
-      hasItem = true;
+    async function init(){
+        await liff.init({
+            liffId: "2009962426-MPtoZcTX" // อย่าลืมใส่ LIFF ID ของคุณ
+        });
     }
-  }
 
-  if(!hasItem){
-    alert("ยังไม่ได้เลือกสินค้า");
-    return;
-  }
+    init();
 
-  liff.sendMessages([
-    {
-      type: "text",
-      text: msg
+    function updateItem(item, change){
+        if(!cart[item]) cart[item] = 0;
+        
+        cart[item] += change;
+        if(cart[item] < 0) cart[item] = 0;
+
+        document.getElementById("count-"+item).innerText = cart[item];
     }
-  ]).then(()=>{
-    liff.closeWindow();
-  });
 
-}
+    function finishOrder(){
+        let msg = "📝 รายการสั่งซื้อ\n";
+        let hasItem = false;
 
+        for(let item in cart){
+            if(cart[item] > 0){
+                msg += "• " + item + " (x" + cart[item] + ")\n";
+                hasItem = true;
+            }
+        }
+
+        if(!hasItem){
+            alert("กรุณาเลือกสินค้าอย่างน้อย 1 อย่างครับ");
+            return;
+        }
+
+        liff.sendMessages([{
+            type: "text",
+            text: msg
+        }]).then(() => {
+            liff.closeWindow();
+        }).catch((err) => {
+            console.error(err);
+        });
+    }
 </script>
 
 </body>
