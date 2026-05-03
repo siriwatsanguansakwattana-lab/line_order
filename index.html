@@ -17,19 +17,17 @@ body {
     color: #333;
 }
 
-/* HEADER */
 h3 {
     font-size: 18px;
     margin: 16px;
-    font-weight: bold;
 }
 
 /* CONTENT */
 .container {
-    padding: 0 16px 120px;
+    padding: 0 16px 140px;
 }
 
-/* ITEM CARD */
+/* ITEM */
 .item {
     background: #fff;
     display: flex;
@@ -64,7 +62,6 @@ h3 {
     font-weight: bold;
     background: #06c755;
     color: white;
-    cursor: pointer;
 }
 
 .circle.minus {
@@ -84,6 +81,13 @@ h3 {
     font-weight: bold;
 }
 
+/* TOTAL BOX */
+.total-box {
+    padding: 10px 16px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
 /* FOOTER */
 .footer {
     position: fixed;
@@ -95,7 +99,6 @@ h3 {
     box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
 }
 
-/* BUTTON SUBMIT */
 .finish-btn {
     width: 100%;
     background: #06c755;
@@ -135,6 +138,10 @@ h3 {
 
 </div>
 
+<div class="total-box" id="totalBox">
+    รวม: 0 บาท
+</div>
+
 <div class="footer">
     <button class="finish-btn" onclick="finishOrder()">
         ส่งรายการสั่งซื้อ
@@ -144,6 +151,13 @@ h3 {
 <script>
 let cart = {};
 
+// 🔥 ราคาสินค้า
+const prices = {
+    "ชิฟฟ่อนมะพร้าว": 20,
+    "ชิฟฟ่อนมะพร้าวมีไส้": 25
+};
+
+// init LIFF
 async function init(){
     await liff.init({
         liffId: "2009962426-MPtoZcTX"
@@ -151,6 +165,7 @@ async function init(){
 }
 init();
 
+// เพิ่ม/ลดสินค้า
 function updateItem(item, change){
     if(!cart[item]) cart[item] = 0;
 
@@ -158,23 +173,49 @@ function updateItem(item, change){
     if(cart[item] < 0) cart[item] = 0;
 
     document.getElementById("count-"+item).innerText = cart[item];
+
+    calculateTotal();
 }
 
+// คำนวณยอดรวม
+function calculateTotal(){
+    let total = 0;
+
+    for(let item in cart){
+        total += cart[item] * prices[item];
+    }
+
+    document.getElementById("totalBox").innerText = "รวม: " + total + " บาท";
+}
+
+// ออกบิล + ส่งเข้า LINE
 function finishOrder(){
-    let msg = "📝 รายการสั่งซื้อ\n";
+    let msg = "🧾 ใบสั่งซื้อ\n";
+    msg += "------------------\n";
+
+    let total = 0;
     let hasItem = false;
 
     for(let item in cart){
         if(cart[item] > 0){
-            msg += "• " + item + " (x" + cart[item] + ")\n";
+            let price = prices[item];
+            let sum = cart[item] * price;
+
+            msg += item + "\n";
+            msg += cart[item] + " x " + price + " = " + sum + " บาท\n\n";
+
+            total += sum;
             hasItem = true;
         }
     }
 
     if(!hasItem){
-        alert("กรุณาเลือกสินค้าอย่างน้อย 1 อย่างครับ");
+        alert("กรุณาเลือกสินค้าอย่างน้อย 1 อย่าง");
         return;
     }
+
+    msg += "------------------\n";
+    msg += "💰 รวมทั้งหมด: " + total + " บาท";
 
     liff.sendMessages([{
         type: "text",
