@@ -102,7 +102,6 @@ h3 {
     font-weight: bold;
 }
 
-/* textarea */
 textarea {
     width: 100%;
     margin-top: 10px;
@@ -118,7 +117,7 @@ textarea {
 
 <div class="container">
 
-    <!-- สินค้า -->
+    <!-- ชิฟฟ่อนมะพร้าว -->
     <div class="item">
         <p>ชิฟฟ่อนมะพร้าว</p>
         <div class="controls">
@@ -128,12 +127,23 @@ textarea {
         </div>
     </div>
 
+    <!-- ชิฟฟ่อนมะพร้าวมีไส้ -->
     <div class="item">
         <p>ชิฟฟ่อนมะพร้าวมีไส้</p>
         <div class="controls">
             <button class="circle minus" onclick="updateItem('ชิฟฟ่อนมะพร้าวมีไส้', -1)">-</button>
             <span id="count-ชิฟฟ่อนมะพร้าวมีไส้" class="count">0</span>
             <button class="circle" onclick="updateItem('ชิฟฟ่อนมะพร้าวมีไส้', 1)">+</button>
+        </div>
+    </div>
+
+    <!-- คอนเฟลกคาราเมล -->
+    <div class="item">
+        <p>คอนเฟลกคาราเมล</p>
+        <div class="controls">
+            <button class="circle minus" onclick="updateItem('คอนเฟลกคาราเมล', -1)">-</button>
+            <span id="count-คอนเฟลกคาราเมล" class="count">0</span>
+            <button class="circle" onclick="updateItem('คอนเฟลกคาราเมล', 1)">+</button>
         </div>
     </div>
 
@@ -179,7 +189,8 @@ let cart = {};
 
 const prices = {
     "ชิฟฟ่อนมะพร้าว": 10,
-    "ชิฟฟ่อนมะพร้าวมีไส้": 15
+    "ชิฟฟ่อนมะพร้าวมีไส้": 15,
+    "คอนเฟลกคาราเมล": 35
 };
 
 let shippingCost = 0;
@@ -195,100 +206,197 @@ init();
 
 // เพิ่ม/ลดสินค้า
 function updateItem(item, change){
+
     if(!cart[item]) cart[item] = 0;
 
     cart[item] += change;
-    if(cart[item] < 0) cart[item] = 0;
+
+    if(cart[item] < 0){
+        cart[item] = 0;
+    }
 
     document.getElementById("count-"+item).innerText = cart[item];
+
     calculateTotal();
 }
 
 // เลือกขนส่ง
 function selectDelivery(){
-    const selected = document.querySelector('input[name="delivery"]:checked').value;
+
+    const selected =
+        document.querySelector('input[name="delivery"]:checked').value;
+
     deliveryType = selected;
 
     if(selected === "cold"){
+
         document.getElementById("coldOptions").style.display = "block";
+
     }else{
+
         document.getElementById("coldOptions").style.display = "none";
         shippingCost = 0;
-        calculateTotal();
     }
+
+    calculateTotal();
 }
 
 // เลือกค่าส่ง
 function updateShipping(){
-    shippingCost = parseInt(document.getElementById("coldOptions").value) || 0;
+
+    shippingCost =
+        parseInt(document.getElementById("coldOptions").value) || 0;
+
     calculateTotal();
 }
 
-// คำนวณ
+// โปรโมชั่น
+function getItemTotal(item, qty){
+
+    // ชิฟฟ่อนมะพร้าว 4 ชิ้น 30
+    if(item === "ชิฟฟ่อนมะพร้าว"){
+
+        let promo = Math.floor(qty / 4) * 30;
+        let remain = (qty % 4) * 10;
+
+        return promo + remain;
+    }
+
+    // ชิฟฟ่อนมะพร้าวมีไส้ 4 ชิ้น 45
+    if(item === "ชิฟฟ่อนมะพร้าวมีไส้"){
+
+        let promo = Math.floor(qty / 4) * 45;
+        let remain = (qty % 4) * 15;
+
+        return promo + remain;
+    }
+
+    // คอนเฟลกคาราเมล 3 ชิ้น 100
+    if(item === "คอนเฟลกคาราเมล"){
+
+        let promo = Math.floor(qty / 3) * 100;
+        let remain = (qty % 3) * 35;
+
+        return promo + remain;
+    }
+
+    return qty * prices[item];
+}
+
+// คำนวณรวม
 function calculateTotal(){
+
     let total = 0;
 
     for(let item in cart){
-        total += cart[item] * prices[item];
+
+        total += getItemTotal(item, cart[item]);
     }
 
-    total += shippingCost;
+    // รวมจำนวนชิฟฟ่อน
+    let chiffonCount =
+        (cart["ชิฟฟ่อนมะพร้าว"] || 0) +
+        (cart["ชิฟฟ่อนมะพร้าวมีไส้"] || 0);
+
+    let finalShipping = shippingCost;
+
+    // ส่งฟรีเมื่อครบ 24 ชิ้น
+    if(chiffonCount >= 24){
+
+        finalShipping = 0;
+    }
+
+    total += finalShipping;
 
     document.getElementById("totalBox").innerText =
         "รวม: " + total + " บาท";
 }
 
-// ส่งบิล
+// ส่งรายการ
 function finishOrder(){
-    let msg = "🧾 ใบสั่งซื้อ\n------------------\n";
+
+    let msg =
+`🧾 ใบสั่งซื้อ
+------------------
+`;
 
     let total = 0;
     let hasItem = false;
 
     for(let item in cart){
-        if(cart[item] > 0){
-            let price = prices[item];
-            let sum = cart[item] * price;
 
-            msg += item + "\n" + cart[item] + " x " + price + " = " + sum + " บาท\n\n";
+        if(cart[item] > 0){
+
+            let qty = cart[item];
+            let sum = getItemTotal(item, qty);
+
+            msg += item + "\n";
+            msg += qty + " ชิ้น = " + sum + " บาท\n\n";
+
             total += sum;
             hasItem = true;
         }
     }
 
     if(!hasItem){
+
         alert("กรุณาเลือกสินค้า");
         return;
     }
 
     if(!deliveryType){
+
         alert("กรุณาเลือกวิธีจัดส่ง");
         return;
     }
 
-    let address = document.getElementById("address").value;
+    let address =
+        document.getElementById("address").value;
+
     if(!address){
+
         alert("กรุณากรอกที่อยู่");
         return;
     }
 
     let deliveryText = "";
+
     if(deliveryType === "lineman"){
+
         deliveryText = "Line Man";
+
     }else{
+
         if(shippingCost === 0){
+
             alert("กรุณาเลือกพื้นที่จัดส่ง");
             return;
         }
-        deliveryText = "จัดส่งแบบเย็น (" + shippingCost + " บาท)";
+
+        deliveryText = "จัดส่งแบบเย็น";
     }
 
-    total += shippingCost;
+    // รวมจำนวนชิฟฟ่อน
+    let chiffonCount =
+        (cart["ชิฟฟ่อนมะพร้าว"] || 0) +
+        (cart["ชิฟฟ่อนมะพร้าวมีไส้"] || 0);
+
+    let finalShipping = shippingCost;
+
+    // ส่งฟรี
+    if(chiffonCount >= 24){
+
+        finalShipping = 0;
+
+        msg += "🎉 โปรโมชั่นส่งฟรี\n\n";
+    }
+
+    total += finalShipping;
 
     msg += "------------------\n";
     msg += "🚚 วิธีจัดส่ง: " + deliveryText + "\n";
     msg += "📍 ที่อยู่: " + address + "\n";
-    msg += "🚛 ค่าส่ง: " + shippingCost + " บาท\n";
+    msg += "🚛 ค่าส่ง: " + finalShipping + " บาท\n";
     msg += "------------------\n";
     msg += "💰 รวมทั้งหมด: " + total + " บาท";
 
@@ -296,7 +404,9 @@ function finishOrder(){
         type: "text",
         text: msg
     }]).then(() => {
+
         liff.closeWindow();
+
     }).catch(console.error);
 }
 </script>
