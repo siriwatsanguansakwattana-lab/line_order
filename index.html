@@ -108,6 +108,13 @@ textarea {
     padding: 10px;
     border-radius: 10px;
 }
+
+/* ตกแต่ง Radio label ให้นั่งเว้นบรรทัดสวยงามขึ้น */
+.delivery-options label {
+    display: block;
+    margin-top: 8px;
+    cursor: pointer;
+}
 </style>
 </head>
 
@@ -148,11 +155,15 @@ textarea {
     </div>
 
     <!-- 🚚 วิธีจัดส่ง -->
-    <div class="item" style="flex-direction: column; align-items: flex-start;">
+    <div class="item delivery-options" style="flex-direction: column; align-items: flex-start;">
         <p>🚚 วิธีจัดส่ง</p>
 
         <label>
-            <input type="radio" name="delivery" value="lineman" onchange="selectDelivery()"> Line Man(เก็บปลายทาง)
+            <input type="radio" name="delivery" value="lineman" onchange="selectDelivery()"> Line Man (เก็บปลายทาง)
+        </label>
+
+        <label>
+            <input type="radio" name="delivery" value="postal" onchange="selectDelivery()"> จัดส่งแบบไปรษณีย์ (35 บาท)
         </label>
 
         <label>
@@ -229,24 +240,25 @@ function selectDelivery(){
     deliveryType = selected;
 
     if(selected === "cold"){
-
         document.getElementById("coldOptions").style.display = "block";
-
-    }else{
-
+        // รีเซ็ตค่าเป็น 0 ก่อน จนกว่าจะเลือกพื้นที่ในดรอปดาวน์
+        shippingCost = parseInt(document.getElementById("coldOptions").value) || 0;
+    } else if(selected === "postal") {
         document.getElementById("coldOptions").style.display = "none";
-        shippingCost = 0;
+        shippingCost = 35; // ตั้งค่าส่งไปรษณีย์ 35 บาท
+    } else {
+        document.getElementById("coldOptions").style.display = "none";
+        shippingCost = 0; // Line Man เก็บปลายทาง
     }
 
     calculateTotal();
 }
 
-// เลือกค่าส่ง
+// เลือกค่าส่งแบบเย็น
 function updateShipping(){
-
-    shippingCost =
-        parseInt(document.getElementById("coldOptions").value) || 0;
-
+    if(deliveryType === "cold") {
+        shippingCost = parseInt(document.getElementById("coldOptions").value) || 0;
+    }
     calculateTotal();
 }
 
@@ -289,7 +301,6 @@ function calculateTotal(){
     let total = 0;
 
     for(let item in cart){
-
         total += getItemTotal(item, cart[item]);
     }
 
@@ -302,7 +313,6 @@ function calculateTotal(){
 
     // ส่งฟรีเมื่อครบ 24 ชิ้น
     if(chiffonCount >= 24){
-
         finalShipping = 0;
     }
 
@@ -339,22 +349,17 @@ function finishOrder(){
     }
 
     if(!hasItem){
-
         alert("กรุณาเลือกสินค้า");
         return;
     }
 
     if(!deliveryType){
-
         alert("กรุณาเลือกวิธีจัดส่ง");
         return;
     }
 
-    let address =
-        document.getElementById("address").value;
-
+    let address = document.getElementById("address").value;
     if(!address){
-
         alert("กรุณากรอกที่อยู่");
         return;
     }
@@ -362,17 +367,14 @@ function finishOrder(){
     let deliveryText = "";
 
     if(deliveryType === "lineman"){
-
-        deliveryText = "Line Man";
-
-    }else{
-
+        deliveryText = "Line Man (เก็บปลายทาง)";
+    } else if(deliveryType === "postal") {
+        deliveryText = "จัดส่งแบบไปรษณีย์";
+    } else if(deliveryType === "cold") {
         if(shippingCost === 0){
-
-            alert("กรุณาเลือกพื้นที่จัดส่ง");
+            alert("กรุณาเลือกพื้นที่จัดส่งแบบเย็น");
             return;
         }
-
         deliveryText = "จัดส่งแบบเย็น";
     }
 
@@ -383,11 +385,9 @@ function finishOrder(){
 
     let finalShipping = shippingCost;
 
-    // ส่งฟรี
+    // ตรวจสอบโปรโมชั่นส่งฟรี
     if(chiffonCount >= 24){
-
         finalShipping = 0;
-
         msg += "🎉 โปรโมชั่นส่งฟรี\n\n";
     }
 
@@ -404,9 +404,7 @@ function finishOrder(){
         type: "text",
         text: msg
     }]).then(() => {
-
         liff.closeWindow();
-
     }).catch(console.error);
 }
 </script>
