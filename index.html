@@ -146,11 +146,11 @@ textarea {
 
     <!-- คอนเฟลกคาราเมล -->
     <div class="item">
-        <p>คอนเฟลกคาราเมล</p>
+        <p>คอนเฟลกคาราเมลน้ำผึ้ง</p>
         <div class="controls">
-            <button class="circle minus" onclick="updateItem('คอนเฟลกคาราเมล', -1)">-</button>
-            <span id="count-คอนเฟลกคาราเมล" class="count">0</span>
-            <button class="circle" onclick="updateItem('คอนเฟลกคาราเมล', 1)">+</button>
+            <button class="circle minus" onclick="updateItem('คอนเฟลกคาราเมลน้ำผึ้ง', -1)">-</button>
+            <span id="count-คอนเฟลกคาราเมลน้ำผึ้ง" class="count">0</span>
+            <button class="circle" onclick="updateItem('คอนเฟลกคาราเมลน้ำผึ้ง', 1)">+</button>
         </div>
     </div>
 
@@ -201,7 +201,7 @@ let cart = {};
 const prices = {
     "ชิฟฟ่อนมะพร้าว": 10,
     "ชิฟฟ่อนมะพร้าวมีไส้": 15,
-    "คอนเฟลกคาราเมล": 35
+    "คอนเฟลกคาราเมลน้ำผึ้ง": 35
 };
 
 let shippingCost = 0;
@@ -284,7 +284,7 @@ function getItemTotal(item, qty){
     }
 
     // คอนเฟลกคาราเมล 3 ชิ้น 100
-    if(item === "คอนเฟลกคาราเมล"){
+    if(item === "คอนเฟลกคาราเมลน้ำผึ้ง"){
 
         let promo = Math.floor(qty / 3) * 100;
         let remain = (qty % 3) * 35;
