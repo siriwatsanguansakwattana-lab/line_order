@@ -126,7 +126,7 @@ textarea {
 
     <!-- ชิฟฟ่อนมะพร้าว -->
     <div class="item">
-        <p>ชิฟฟ่อนมะพร้าว</p>
+        <p>ชิฟฟ่อนมะพร้าว (ชิ้นละ 10.- ซื้อ 4 จ่าย 3)</p>
         <div class="controls">
             <button class="circle minus" onclick="updateItem('ชิฟฟ่อนมะพร้าว', -1)">-</button>
             <span id="count-ชิฟฟ่อนมะพร้าว" class="count">0</span>
@@ -136,7 +136,7 @@ textarea {
 
     <!-- ชิฟฟ่อนมะพร้าวมีไส้ -->
     <div class="item">
-        <p>ชิฟฟ่อนมะพร้าวมีไส้</p>
+        <p>ชิฟฟ่อนมะพร้าวมีไส้ (ชิ้นละ 15.- ซื้อ 4 จ่าย 3)</p>
         <div class="controls">
             <button class="circle minus" onclick="updateItem('ชิฟฟ่อนมะพร้าวมีไส้', -1)">-</button>
             <span id="count-ชิฟฟ่อนมะพร้าวมีไส้" class="count">0</span>
@@ -241,14 +241,13 @@ function selectDelivery(){
 
     if(selected === "cold"){
         document.getElementById("coldOptions").style.display = "block";
-        // รีเซ็ตค่าเป็น 0 ก่อน จนกว่าจะเลือกพื้นที่ในดรอปดาวน์
         shippingCost = parseInt(document.getElementById("coldOptions").value) || 0;
     } else if(selected === "postal") {
         document.getElementById("coldOptions").style.display = "none";
-        shippingCost = 35; // ตั้งค่าส่งไปรษณีย์ 35 บาท
+        shippingCost = 35;
     } else {
         document.getElementById("coldOptions").style.display = "none";
-        shippingCost = 0; // Line Man เก็บปลายทาง
+        shippingCost = 0;
     }
 
     calculateTotal();
@@ -262,33 +261,32 @@ function updateShipping(){
     calculateTotal();
 }
 
-// โปรโมชั่น
+// คำนวณจำนวนชิ้นที่แถมฟรีตามโปรโมชั่น ซื้อ 4 จ่าย 3 (สั่งครบทุก 4 ชิ้น แถมฟรี 1 ชิ้น)
+function getFreeItemCount(qty) {
+    return Math.floor(qty / 4);
+}
+
+// คำนวณราคาของสินค้าแต่ละตัว
 function getItemTotal(item, qty){
 
-    // ชิฟฟ่อนมะพร้าว 4 ชิ้น 30
+    // โปรโมชั่น ชิฟฟ่อนมะพร้าว (ซื้อ 4 จ่าย 3)
     if(item === "ชิฟฟ่อนมะพร้าว"){
-
-        let promo = Math.floor(qty / 4) * 30;
-        let remain = (qty % 4) * 10;
-
-        return promo + remain;
+        let freeItems = getFreeItemCount(qty);
+        let billableQty = qty - freeItems; // จำนวนชิ้นที่คิดเงินจริง
+        return billableQty * prices["ชิฟฟ่อนมะพร้าว"];
     }
 
-    // ชิฟฟ่อนมะพร้าวมีไส้ 4 ชิ้น 45
+    // โปรโมชั่น ชิฟฟ่อนมะพร้าวมีไส้ (ซื้อ 4 จ่าย 3 - แยกจํานวน)
     if(item === "ชิฟฟ่อนมะพร้าวมีไส้"){
-
-        let promo = Math.floor(qty / 4) * 45;
-        let remain = (qty % 4) * 15;
-
-        return promo + remain;
+        let freeItems = getFreeItemCount(qty);
+        let billableQty = qty - freeItems; // จำนวนชิ้นที่คิดเงินจริง
+        return billableQty * prices["ชิฟฟ่อนมะพร้าวมีไส้"];
     }
 
     // คอนเฟลกคาราเมล 3 ชิ้น 100
     if(item === "คอนเฟลกคาราเมลน้ำผึ้ง"){
-
         let promo = Math.floor(qty / 3) * 100;
         let remain = (qty % 3) * 35;
-
         return promo + remain;
     }
 
@@ -304,14 +302,13 @@ function calculateTotal(){
         total += getItemTotal(item, cart[item]);
     }
 
-    // รวมจำนวนชิฟฟ่อน
+    // รวมจำนวนชิฟฟ่อนเพื่อใช้คิดโปรส่งฟรีครบ 24 ชิ้น
     let chiffonCount =
         (cart["ชิฟฟ่อนมะพร้าว"] || 0) +
         (cart["ชิฟฟ่อนมะพร้าวมีไส้"] || 0);
 
     let finalShipping = shippingCost;
 
-    // ส่งฟรีเมื่อครบ 24 ชิ้น
     if(chiffonCount >= 24){
         finalShipping = 0;
     }
@@ -341,7 +338,17 @@ function finishOrder(){
             let sum = getItemTotal(item, qty);
 
             msg += item + "\n";
-            msg += qty + " ชิ้น = " + sum + " บาท\n\n";
+            msg += qty + " ชิ้น = " + sum + " บาท";
+            
+            // แสดงรายละเอียดของแถมในใบสั่งซื้อ (สำหรับโปร ซื้อ 4 จ่าย 3)
+            if(item === "ชิฟฟ่อนมะพร้าว" || item === "ชิฟฟ่อนมะพร้าวมีไส้") {
+                let free = getFreeItemCount(qty);
+                if(free > 0) {
+                    msg += " (โปรโมชั่น หักลบฟรี " + free + " ชิ้น)";
+                }
+            }
+            
+            msg += "\n\n";
 
             total += sum;
             hasItem = true;
@@ -378,14 +385,12 @@ function finishOrder(){
         deliveryText = "จัดส่งแบบเย็น";
     }
 
-    // รวมจำนวนชิฟฟ่อน
     let chiffonCount =
         (cart["ชิฟฟ่อนมะพร้าว"] || 0) +
         (cart["ชิฟฟ่อนมะพร้าวมีไส้"] || 0);
 
     let finalShipping = shippingCost;
 
-    // ตรวจสอบโปรโมชั่นส่งฟรี
     if(chiffonCount >= 24){
         finalShipping = 0;
         msg += "🎉 โปรโมชั่นส่งฟรี\n\n";
