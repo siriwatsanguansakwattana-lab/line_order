@@ -2,18 +2,19 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-  >
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
   <title>Order Menu</title>
-  <!-- LINE LIFF SDK -->
+
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
   <style>
     * {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
     }
+
     body {
       margin: 0;
       padding: 0;
@@ -22,7 +23,7 @@
       background: #f5f7f5;
       color: #333;
     }
-    /* HEADER */
+
     .header {
       background: linear-gradient(135deg, #36a852, #178a45);
       color: white;
@@ -31,33 +32,36 @@
       border-radius: 0 0 22px 22px;
       box-shadow: 0 3px 10px rgba(0,0,0,0.12);
     }
+
     .header h1 {
       margin: 0;
       font-size: 25px;
       font-weight: bold;
     }
+
     .header p {
       margin: 7px 0 0;
       font-size: 14px;
       opacity: 0.95;
     }
-    /* CONTAINER */
+
     .container {
       width: 100%;
       max-width: 650px;
       margin: auto;
       padding: 15px;
     }
-    /* SECTION */
+
     .section {
       margin-top: 20px;
     }
+
     .section-title {
       font-size: 19px;
       font-weight: bold;
       margin-bottom: 10px;
     }
-    /* PRODUCT CARD */
+
     .product-card {
       background: white;
       border-radius: 17px;
@@ -65,30 +69,34 @@
       margin-bottom: 13px;
       box-shadow: 0 3px 12px rgba(0,0,0,0.07);
     }
+
     .product-info {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 10px;
     }
+
     .product-detail {
       flex: 1;
       min-width: 0;
     }
+
     .product-name {
       font-size: 17px;
       font-weight: bold;
       line-height: 1.4;
     }
+
     .product-price {
       margin-top: 5px;
       font-size: 15px;
       font-weight: bold;
       color: #178a45;
     }
-    /* PROMOTION */
+
     .promo-badge {
-      display: inline-block;
+      display: none;
       margin-top: 7px;
       padding: 5px 9px;
       border-radius: 20px;
@@ -97,6 +105,7 @@
       font-size: 12px;
       font-weight: bold;
     }
+
     .cold-badge {
       display: inline-block;
       margin-top: 7px;
@@ -107,13 +116,14 @@
       font-size: 12px;
       font-weight: bold;
     }
-    /* QUANTITY */
+
     .quantity {
       display: flex;
       align-items: center;
       gap: 10px;
       flex-shrink: 0;
     }
+
     .quantity button {
       width: 38px;
       height: 38px;
@@ -126,22 +136,25 @@
       line-height: 1;
       cursor: pointer;
     }
+
     .quantity button:active {
       transform: scale(0.92);
     }
+
     .quantity span {
       min-width: 25px;
       text-align: center;
       font-size: 18px;
       font-weight: bold;
     }
-    /* DELIVERY */
+
     .delivery-card {
       background: white;
       border-radius: 17px;
       padding: 15px;
       box-shadow: 0 3px 12px rgba(0,0,0,0.07);
     }
+
     .delivery-option {
       display: flex;
       align-items: center;
@@ -150,22 +163,26 @@
       border-bottom: 1px solid #eee;
       font-size: 16px;
     }
+
     .delivery-option:last-child {
       border-bottom: none;
     }
+
     .delivery-option input {
       width: 19px;
       height: 19px;
       accent-color: #36a852;
     }
+
     .delivery-option.disabled {
       opacity: 0.45;
     }
-    /* COLD SHIPPING */
+
     .cold-options {
       display: none;
       margin-top: 12px;
     }
+
     .cold-options select {
       width: 100%;
       padding: 13px;
@@ -174,13 +191,14 @@
       font-size: 15px;
       background: white;
     }
-    /* ADDRESS */
+
     .address-box {
       background: white;
       border-radius: 17px;
       padding: 15px;
       box-shadow: 0 3px 12px rgba(0,0,0,0.07);
     }
+
     textarea {
       width: 100%;
       min-height: 110px;
@@ -192,17 +210,19 @@
       font-size: 15px;
       outline: none;
     }
+
     textarea:focus,
     select:focus {
       border-color: #36a852;
     }
+
     .note {
       font-size: 13px;
       color: #777;
       margin-top: 8px;
       line-height: 1.5;
     }
-    /* TOTAL */
+
     .total-bar {
       position: fixed;
       left: 0;
@@ -213,6 +233,7 @@
       box-shadow: 0 -3px 12px rgba(0,0,0,0.1);
       z-index: 20;
     }
+
     .total-inner {
       max-width: 650px;
       margin: auto;
@@ -220,16 +241,18 @@
       justify-content: space-between;
       align-items: center;
     }
+
     .total-label {
       font-size: 16px;
       color: #555;
     }
+
     .total-price {
       font-size: 22px;
       font-weight: bold;
       color: #178a45;
     }
-    /* FOOTER */
+
     .footer {
       position: fixed;
       left: 0;
@@ -240,6 +263,7 @@
       box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
       z-index: 30;
     }
+
     .finish-btn {
       display: block;
       width: 100%;
@@ -254,53 +278,58 @@
       font-weight: bold;
       cursor: pointer;
     }
+
     .finish-btn:active {
       transform: scale(0.98);
     }
-    /* SMALL SCREEN */
+
     @media (max-width: 380px) {
       .product-name {
         font-size: 15px;
       }
+
       .quantity {
         gap: 6px;
       }
+
       .quantity button {
         width: 34px;
         height: 34px;
       }
+
       .quantity span {
         min-width: 20px;
       }
     }
   </style>
 </head>
+
 <body>
+
   <!-- HEADER -->
   <div class="header">
     <h1>🍰 Order Menu</h1>
     <p>เลือกสินค้าและจำนวนที่ต้องการ</p>
   </div>
+
   <div class="container">
+
     <!-- PRODUCTS -->
     <div class="section">
+
       <div class="section-title">
         🛒 รายการสินค้า
       </div>
+
       <!-- ชิฟฟ่อนมะพร้าว -->
       <div class="product-card">
         <div class="product-info">
           <div class="product-detail">
-            <div class="product-name">
-              ชิฟฟ่อนมะพร้าว
-            </div>
-            <div class="product-price">
-              10 บาท / ชิ้น
-            </div>
-            <div class="cold-badge">
-              ❄️ ส่งแบบเย็นเท่านั้น
-            </div>
+            <div class="product-name">ชิฟฟ่อนมะพร้าว</div>
+            <div class="product-price">10 บาท / ชิ้น</div>
+            <div class="cold-badge">❄️ ส่งแบบเย็นเท่านั้น</div>
           </div>
+
           <div class="quantity">
             <button onclick="changeQty('ชิฟฟ่อนมะพร้าว', -1)">−</button>
             <span id="qty-ชิฟฟ่อนมะพร้าว">0</span>
@@ -308,20 +337,16 @@
           </div>
         </div>
       </div>
+
       <!-- ชิฟฟ่อนมะพร้าวมีไส้ -->
       <div class="product-card">
         <div class="product-info">
           <div class="product-detail">
-            <div class="product-name">
-              ชิฟฟ่อนมะพร้าวมีไส้
-            </div>
-            <div class="product-price">
-              15 บาท / ชิ้น
-            </div>
-            <div class="cold-badge">
-              ❄️ ส่งแบบเย็นเท่านั้น
-            </div>
+            <div class="product-name">ชิฟฟ่อนมะพร้าวมีไส้</div>
+            <div class="product-price">15 บาท / ชิ้น</div>
+            <div class="cold-badge">❄️ ส่งแบบเย็นเท่านั้น</div>
           </div>
+
           <div class="quantity">
             <button onclick="changeQty('ชิฟฟ่อนมะพร้าวมีไส้', -1)">−</button>
             <span id="qty-ชิฟฟ่อนมะพร้าวมีไส้">0</span>
@@ -329,22 +354,19 @@
           </div>
         </div>
       </div>
+
       <!-- คอนเฟลก -->
       <div class="product-card">
         <div class="product-info">
           <div class="product-detail">
-            <div class="product-name">
-              คอนเฟลกคาราเมลน้ำผึ้ง
-            </div>
-            <div class="product-price">
-              35 บาท / ถุง
-            </div>
-            
-            <!--<div class="promo-badge">
+            <div class="product-name">คอนเฟลกคาราเมลน้ำผึ้ง</div>
+            <div class="product-price">35 บาท / ถุง</div>
+
+            <div class="promo-badge" id="promo-cornflake">
               🎉 ซื้อ 3 ถุง เพียง 100 บาท
-            </div> -->
-            
+            </div>
           </div>
+
           <div class="quantity">
             <button onclick="changeQty('คอนเฟลกคาราเมลน้ำผึ้ง', -1)">−</button>
             <span id="qty-คอนเฟลกคาราเมลน้ำผึ้ง">0</span>
@@ -352,22 +374,19 @@
           </div>
         </div>
       </div>
+
       <!-- ทองม้วนกรอบ -->
       <div class="product-card">
         <div class="product-info">
           <div class="product-detail">
-            <div class="product-name">
-              ทองม้วนกรอบ
-            </div>
-            <div class="product-price">
-              35 บาท / ถุง
-            </div>
-            
-           <!-- <div class="promo-badge">
+            <div class="product-name">ทองม้วนกรอบ</div>
+            <div class="product-price">35 บาท / ถุง</div>
+
+            <div class="promo-badge" id="promo-gold">
               🎉 ซื้อ 3 ถุง เพียง 100 บาท
-            </div> -->
-            
+            </div>
           </div>
+
           <div class="quantity">
             <button onclick="changeQty('ทองม้วนกรอบ', -1)">−</button>
             <span id="qty-ทองม้วนกรอบ">0</span>
@@ -375,20 +394,16 @@
           </div>
         </div>
       </div>
+
       <!-- เค้กมะพร้าว -->
       <div class="product-card">
         <div class="product-info">
           <div class="product-detail">
-            <div class="product-name">
-              เค้กมะพร้าว
-            </div>
-            <div class="product-price">
-              20 บาท / ถ้วย
-            </div>
-            <div class="cold-badge">
-              ❄️ ส่งแบบเย็นเท่านั้น
-            </div>
+            <div class="product-name">เค้กมะพร้าว</div>
+            <div class="product-price">20 บาท / ถ้วย</div>
+            <div class="cold-badge">❄️ ส่งแบบเย็นเท่านั้น</div>
           </div>
+
           <div class="quantity">
             <button onclick="changeQty('เค้กมะพร้าว', -1)">−</button>
             <span id="qty-เค้กมะพร้าว">0</span>
@@ -396,17 +411,15 @@
           </div>
         </div>
       </div>
+
       <!-- เค้กช็อคโกแลต -->
       <div class="product-card">
         <div class="product-info">
           <div class="product-detail">
-            <div class="product-name">
-              เค้กช็อคโกแลต
-            </div>
-            <div class="product-price">
-              20 บาท / ถ้วย
-            </div>
+            <div class="product-name">เค้กช็อคโกแลต</div>
+            <div class="product-price">20 บาท / ถ้วย</div>
           </div>
+
           <div class="quantity">
             <button onclick="changeQty('เค้กช็อคโกแลต', -1)">−</button>
             <span id="qty-เค้กช็อคโกแลต">0</span>
@@ -414,17 +427,15 @@
           </div>
         </div>
       </div>
+
       <!-- บราวนี่ -->
       <div class="product-card">
         <div class="product-info">
           <div class="product-detail">
-            <div class="product-name">
-              บราวนี่
-            </div>
-            <div class="product-price">
-              20 บาท / ชิ้น
-            </div>
+            <div class="product-name">บราวนี่</div>
+            <div class="product-price">20 บาท / ชิ้น</div>
           </div>
+
           <div class="quantity">
             <button onclick="changeQty('บราวนี่', -1)">−</button>
             <span id="qty-บราวนี่">0</span>
@@ -432,20 +443,16 @@
           </div>
         </div>
       </div>
+
       <!-- ทาร์ตไข่ -->
       <div class="product-card">
         <div class="product-info">
           <div class="product-detail">
-            <div class="product-name">
-              ทาร์ตไข่
-            </div>
-            <div class="product-price">
-              20 บาท / กล่อง
-            </div>
-            <div class="cold-badge">
-              ❄️ ส่งแบบเย็นเท่านั้น
-            </div>
+            <div class="product-name">ทาร์ตไข่</div>
+            <div class="product-price">20 บาท / กล่อง</div>
+            <div class="cold-badge">❄️ ส่งแบบเย็นเท่านั้น</div>
           </div>
+
           <div class="quantity">
             <button onclick="changeQty('ทาร์ตไข่', -1)">−</button>
             <span id="qty-ทาร์ตไข่">0</span>
@@ -453,102 +460,115 @@
           </div>
         </div>
       </div>
+
       <div class="note">
         * ชิฟฟ่อนมะพร้าว, ชิฟฟ่อนมะพร้าวมีไส้,
         เค้กมะพร้าว และทาร์ตไข่ ส่งแบบเย็นเท่านั้น
       </div>
+
     </div>
+
     <!-- DELIVERY -->
     <div class="section">
+
       <div class="section-title">
         🚚 วิธีจัดส่ง
       </div>
+
       <div class="delivery-card">
-        <!-- LINE MAN -->
+
         <label class="delivery-option" id="linemanOption">
-          <input
-            type="radio"
-            name="delivery"
+          <input type="radio" name="delivery"
             value="lineman"
-            onchange="selectDelivery('lineman')"
-          >
+            onchange="selectDelivery('lineman')">
           <span>LINE MAN</span>
         </label>
-        <!-- POST -->
+
         <label class="delivery-option" id="postalOption">
-          <input
-            type="radio"
-            name="delivery"
+          <input type="radio" name="delivery"
             value="postal"
-            onchange="selectDelivery('postal')"
-          >
+            onchange="selectDelivery('postal')">
           <span>ไปรษณีย์ (35 บาท)</span>
         </label>
-        <!-- COLD -->
+
         <label class="delivery-option" id="coldOption">
-          <input
-            type="radio"
-            name="delivery"
+          <input type="radio" name="delivery"
             value="cold"
-            onchange="selectDelivery('cold')"
-          >
+            onchange="selectDelivery('cold')">
           <span>❄️ ส่งแบบเย็น</span>
         </label>
-        <!-- COLD AREA -->
+
         <div class="cold-options" id="coldOptions">
+
           <select id="coldArea" onchange="updateShipping()">
-            <option value="">
-              -- เลือกพื้นที่จัดส่ง --
-            </option>
-            <option value="110">
-              กรุงเทพฯ และปริมณฑล (110 บาท)
-            </option>
-            <option value="160">
-              ต่างจังหวัด (160 บาท)
-            </option>
+            <option value="">-- เลือกพื้นที่จัดส่ง --</option>
+            <option value="110">กรุงเทพฯ และปริมณฑล (110 บาท)</option>
+            <option value="160">ต่างจังหวัด (160 บาท)</option>
           </select>
+
         </div>
+
       </div>
     </div>
+
     <!-- ADDRESS -->
     <div class="section">
+
       <div class="section-title">
         📍 ที่อยู่จัดส่ง
       </div>
+
       <div class="address-box">
-        <textarea
-          id="address"
-          placeholder="กรุณากรอกชื่อผู้รับ เบอร์โทร และที่อยู่จัดส่ง"
-        ></textarea>
+
+        <textarea id="address"
+          placeholder="กรุณากรอกชื่อผู้รับ เบอร์โทร และที่อยู่จัดส่ง"></textarea>
+
         <div class="note">
           กรุณาตรวจสอบที่อยู่และเบอร์โทรให้ถูกต้อง
           ก่อนกดส่งออเดอร์
         </div>
+
       </div>
     </div>
+
   </div>
+
   <!-- TOTAL -->
   <div class="total-bar">
     <div class="total-inner">
-      <div class="total-label">
-        รวมทั้งหมด
-      </div>
+
+      <div class="total-label">รวมทั้งหมด</div>
+
       <div class="total-price">
         <span id="total">0</span>
         บาท
       </div>
+
     </div>
   </div>
+
   <!-- FOOTER -->
   <div class="footer">
     <button class="finish-btn" onclick="finishOrder()">
       📩 ส่งออเดอร์เข้า LINE
     </button>
   </div>
+
   <script>
+
+    /* =========================
+       PROMOTION SETTING
+       true  = เปิดโปรโมชั่น
+       false = ปิดโปรโมชั่น
+    ========================= */
+
+    const PROMOTION_ENABLED = false;
+
+
     /* =========================
        PRICE
     ========================= */
+
     const prices = {
       "ชิฟฟ่อนมะพร้าว": 10,
       "ชิฟฟ่อนมะพร้าวมีไส้": 15,
@@ -559,24 +579,52 @@
       "บราวนี่": 20,
       "ทาร์ตไข่": 20
     };
+
+
     /* =========================
        PROMOTIONS
-       ซื้อครบ 3 ถุง ราคา 100 บาท
+    ========================= */
+
     const promotions = {
+
       "คอนเฟลกคาราเมลน้ำผึ้ง": {
         qty: 3,
         price: 100
       },
+
       "ทองม้วนกรอบ": {
         qty: 3,
         price: 100
       }
+
     };
+
+
+    /* =========================
+       PROMOTION BADGES
     ========================= */
-    
+
+    function updatePromotionDisplay() {
+
+      document.getElementById(
+        "promo-cornflake"
+      ).style.display = PROMOTION_ENABLED
+        ? "inline-block"
+        : "none";
+
+      document.getElementById(
+        "promo-gold"
+      ).style.display = PROMOTION_ENABLED
+        ? "inline-block"
+        : "none";
+
+    }
+
+
     /* =========================
        UNIT
     ========================= */
+
     const units = {
       "ชิฟฟ่อนมะพร้าว": "ชิ้น",
       "ชิฟฟ่อนมะพร้าวมีไส้": "ชิ้น",
@@ -587,18 +635,24 @@
       "บราวนี่": "ชิ้น",
       "ทาร์ตไข่": "กล่อง"
     };
+
+
     /* =========================
        COLD PRODUCTS
     ========================= */
+
     const coldProducts = [
       "ชิฟฟ่อนมะพร้าว",
       "ชิฟฟ่อนมะพร้าวมีไส้",
       "เค้กมะพร้าว",
       "ทาร์ตไข่"
     ];
+
+
     /* =========================
        QUANTITY
     ========================= */
+
     const quantities = {
       "ชิฟฟ่อนมะพร้าว": 0,
       "ชิฟฟ่อนมะพร้าวมีไส้": 0,
@@ -609,324 +663,539 @@
       "บราวนี่": 0,
       "ทาร์ตไข่": 0
     };
+
+
     let deliveryType = "";
     let shippingCost = 0;
+
+
     /* =========================
        CHANGE QUANTITY
     ========================= */
+
     function changeQty(item, amount) {
+
       quantities[item] += amount;
+
       if (quantities[item] < 0) {
         quantities[item] = 0;
       }
+
       document.getElementById(
         "qty-" + item
       ).textContent = quantities[item];
+
       checkColdDelivery();
+
       calculateTotal();
+
     }
+
+
     /* =========================
        CHECK COLD PRODUCT
     ========================= */
+
     function hasColdProduct() {
+
       return coldProducts.some(
         item => quantities[item] > 0
       );
+
     }
+
+
     /* =========================
        CHECK DELIVERY
     ========================= */
+
     function checkColdDelivery() {
+
       const needCold = hasColdProduct();
+
       const linemanOption =
         document.getElementById("linemanOption");
+
       const postalOption =
         document.getElementById("postalOption");
+
       const coldOptions =
         document.getElementById("coldOptions");
+
       const coldRadio =
         document.querySelector('input[value="cold"]');
+
       const linemanRadio =
         document.querySelector('input[value="lineman"]');
+
       const postalRadio =
         document.querySelector('input[value="postal"]');
+
+
       if (needCold) {
+
         // ปิด LINE MAN
         linemanRadio.disabled = true;
         linemanOption.classList.add("disabled");
+
         // ปิดไปรษณีย์
         postalRadio.disabled = true;
         postalOption.classList.add("disabled");
+
         // เลือกส่งเย็น
         coldRadio.checked = true;
         deliveryType = "cold";
+
         coldOptions.style.display = "block";
+
         updateShipping();
+
       } else {
+
         // เปิด LINE MAN
         linemanRadio.disabled = false;
         linemanOption.classList.remove("disabled");
+
         // เปิดไปรษณีย์
         postalRadio.disabled = false;
         postalOption.classList.remove("disabled");
+
         if (deliveryType === "cold") {
           coldOptions.style.display = "block";
         } else {
           coldOptions.style.display = "none";
         }
+
       }
+
       calculateTotal();
+
     }
+
+
     /* =========================
        SELECT DELIVERY
     ========================= */
+
     function selectDelivery(type) {
+
       if (
         hasColdProduct() &&
         type !== "cold"
       ) {
+
         alert(
           "สินค้าที่เลือกมีสินค้าที่ต้องส่งแบบเย็นเท่านั้น"
         );
+
         document.querySelector(
           'input[value="cold"]'
         ).checked = true;
+
         deliveryType = "cold";
+
         document.getElementById(
           "coldOptions"
         ).style.display = "block";
+
         updateShipping();
+
         return;
+
       }
+
       deliveryType = type;
+
       if (type === "cold") {
+
         document.getElementById(
           "coldOptions"
         ).style.display = "block";
+
         updateShipping();
+
       } else {
+
         document.getElementById(
           "coldOptions"
         ).style.display = "none";
+
         if (type === "postal") {
           shippingCost = 35;
         }
+
         if (type === "lineman") {
           shippingCost = 0;
         }
+
       }
+
       calculateTotal();
+
     }
+
+
     /* =========================
        UPDATE SHIPPING
     ========================= */
+
     function updateShipping() {
-      const area = document.getElementById("coldArea").value;
+
+      const area = document.getElementById(
+        "coldArea"
+      ).value;
+
       if (area) {
         shippingCost = Number(area);
       } else {
         shippingCost = 0;
       }
+
       calculateTotal();
+
     }
+
+
     /* =========================
-       ITEM TOTAL WITH PROMOTION
+       ITEM TOTAL
+       PROMOTION ON/OFF
     ========================= */
+
     function getItemTotal(item, qty) {
-      // ตรวจสอบว่ามีโปรโมชั่นหรือไม่
-      if (promotions[item]) {
+
+      // หากเปิดโปรโมชั่น
+      if (
+        PROMOTION_ENABLED &&
+        promotions[item]
+      ) {
+
         const promo = promotions[item];
-        // จำนวนชุดโปรโมชั่น
+
         const promoSets = Math.floor(
           qty / promo.qty
         );
-        // จำนวนสินค้าที่เหลือจากโปรโมชั่น
-        const remainingQty =
-          qty % promo.qty;
-        // ราคาชุดโปรโมชั่น
+
+        const remainingQty = qty % promo.qty;
+
         const promoTotal =
           promoSets * promo.price;
-        // ราคาสินค้าที่เหลือ คิดราคาปกติ
+
         const remainingTotal =
           remainingQty * prices[item];
+
         return promoTotal + remainingTotal;
+
       }
-      // สินค้าที่ไม่มีโปรโมชั่น
+
+      // หากปิดโปรโมชั่น คิดราคาปกติ
       return qty * prices[item];
+
     }
+
+
     /* =========================
        CALCULATE TOTAL
     ========================= */
+
     function calculateTotal() {
+
       let total = 0;
+
       Object.keys(quantities).forEach(item => {
+
         total += getItemTotal(
           item,
           quantities[item]
         );
+
       });
+
       // บวกค่าจัดส่ง
       total += shippingCost;
+
       document.getElementById(
         "total"
       ).textContent = total.toLocaleString("th-TH");
+
     }
+
+
     /* =========================
        FINISH ORDER
     ========================= */
+
     async function finishOrder() {
+
       const selectedItems = [];
-      /* ตรวจสอบสินค้า */
+
+      // ตรวจสอบสินค้า
       Object.keys(quantities).forEach(item => {
+
         const qty = quantities[item];
+
         if (qty > 0) {
+
           selectedItems.push({
+
             name: item,
             qty: qty,
             price: prices[item],
             unit: units[item],
-            // ใช้ราคาหลังโปรโมชั่น
             total: getItemTotal(item, qty)
+
           });
+
         }
+
       });
-      /* ไม่มีสินค้า */
+
+
+      // ไม่มีสินค้า
       if (selectedItems.length === 0) {
+
         alert("กรุณาเลือกสินค้าอย่างน้อย 1 รายการ");
+
         return;
+
       }
-      /* ไม่เลือกการจัดส่ง */
+
+
+      // ไม่เลือกการจัดส่ง
       if (!deliveryType) {
+
         alert("กรุณาเลือกวิธีจัดส่ง");
+
         return;
+
       }
-      /* มีสินค้าส่งเย็น */
+
+
+      // มีสินค้าส่งเย็น
       if (
         hasColdProduct() &&
         deliveryType !== "cold"
       ) {
+
         alert(
           "สินค้าที่เลือกต้องจัดส่งแบบเย็นเท่านั้น"
         );
+
         return;
+
       }
-      /* ส่งเย็นแต่ไม่เลือกพื้นที่ */
+
+
+      // ส่งเย็นแต่ไม่เลือกพื้นที่
       if (
         deliveryType === "cold" &&
         shippingCost === 0
       ) {
+
         alert("กรุณาเลือกพื้นที่จัดส่งแบบเย็น");
+
         return;
+
       }
-      /* ที่อยู่ */
+
+
+      // ที่อยู่
       const address = document.getElementById(
         "address"
       ).value.trim();
+
       if (!address) {
+
         alert("กรุณากรอกที่อยู่จัดส่ง");
+
         return;
+
       }
+
+
       /* =========================
          CALCULATE
       ========================= */
+
       let totalProduct = 0;
+
       selectedItems.forEach(item => {
+
         totalProduct += item.total;
+
       });
+
       const total = totalProduct + shippingCost;
+
+
       /* =========================
          CREATE LINE MESSAGE
       ========================= */
+
       let msg = "🛒 รายการสั่งซื้อ\n\n";
+
       selectedItems.forEach(item => {
+
         msg +=
           `${item.name} x${item.qty} ${item.unit} = ${item.total} บาท\n`;
-        // แสดงโปรโมชั่นในข้อความ LINE
-        if (promotions[item.name]) {
+
+        // แสดงโปรโมชั่นเฉพาะเมื่อเปิดใช้งาน
+        if (
+          PROMOTION_ENABLED &&
+          promotions[item.name]
+        ) {
+
           const promo = promotions[item.name];
+
           const promoSets = Math.floor(
             item.qty / promo.qty
           );
+
           if (promoSets > 0) {
+
             msg +=
               `🎉 โปรโมชั่น ${promoSets} ชุด (${promo.qty} ถุง / ชุด)\n`;
+
           }
+
         }
+
       });
+
+
       /* =========================
          DELIVERY MESSAGE
       ========================= */
+
       msg += "\n🚚 การจัดส่ง: ";
+
       if (deliveryType === "lineman") {
+
         msg += "LINE MAN";
+
       } else if (deliveryType === "postal") {
+
         msg += "ไปรษณีย์";
+
       } else {
-        const area = document.getElementById("coldArea");
+
+        const area = document.getElementById(
+          "coldArea"
+        );
+
         const areaValue = area.value;
+
         let areaName = "";
+
         if (areaValue === "110") {
           areaName = "กรุงเทพฯ และปริมณฑล";
         } else if (areaValue === "160") {
           areaName = "ต่างจังหวัด";
         }
+
         msg += "ส่งแบบเย็น";
+
         if (areaName) {
           msg += `\nพื้นที่: ${areaName}`;
         }
+
       }
+
+
       /* =========================
          SHIPPING COST
       ========================= */
+
       msg += `\nค่าจัดส่ง: ${shippingCost} บาท`;
+
+
       /* =========================
          ADDRESS
       ========================= */
+
       msg += `\n\n📍 ที่อยู่จัดส่ง:\n${address}`;
+
+
       /* =========================
          TOTAL
       ========================= */
+
       msg += `\n\n💰 รวมทั้งหมด: ${total} บาท`;
+
+
       /* =========================
          SEND TO LINE
       ========================= */
+
       try {
+
         if (!liff.isInClient()) {
+
           alert("กรุณาเปิดหน้านี้ผ่าน LINE");
+
           return;
+
         }
+
         await liff.sendMessages([
+
           {
             type: "text",
             text: msg
           }
+
         ]);
+
         liff.closeWindow();
+
       } catch (error) {
+
         console.error("Send message error:", error);
+
         alert(
           "ไม่สามารถส่งออเดอร์ได้ กรุณาลองใหม่อีกครั้ง"
         );
+
       }
+
     }
+
+
     /* =========================
        LIFF INIT
     ========================= */
+
     async function init() {
+
       try {
+
         await liff.init({
+
           liffId: "2009962426-MPtoZcTX"
+
         });
+
         console.log("LIFF initialized");
+
       } catch (error) {
+
         console.error("LIFF init error:", error);
+
       }
+
     }
+
+
     /* =========================
        START
     ========================= */
+
+    updatePromotionDisplay();
+
     init();
+
     calculateTotal();
+
   </script>
+
 </body>
 </html>
